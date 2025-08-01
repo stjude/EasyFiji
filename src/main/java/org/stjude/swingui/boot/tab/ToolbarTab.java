@@ -6,6 +6,7 @@ import org.stjude.swingui.boot.panel.VisualizePanel;
 import org.stjude.swingui.boot.event.TfButtonListener;
 import org.stjude.swingui.boot.panel.InfoPanel;
 import org.stjude.swingui.boot.proc.Contrast;
+import javax.swing.ToolTipManager;
 
 import java.awt.*;
 import javax.swing.*;
@@ -24,7 +25,7 @@ public class ToolbarTab extends WindowAdapter {
 
     public ToolbarTab() {
         frameWidth = 320;
-        frameHeight = 435;
+        frameHeight = 420;
 		setup();
     }
 
@@ -64,7 +65,8 @@ public class ToolbarTab extends WindowAdapter {
 		// Displays the frame on the screen
 		f.setAlwaysOnTop(true);
         f.setVisible(true);
-		
+		// tooltips waittime longer
+		ToolTipManager.sharedInstance().setDismissDelay(12000);
     }
 
     // WindowActivated event is generated anytime user clicks ANYWHERE on the GUI window

@@ -125,12 +125,12 @@ public class ProcessPanel extends BasePanel {
         // ---- record action listeners ----
         addLabel(this, "Record Actions:", "", new Rectangle(10, 265, 120, 20), 14);
         //addButton(this, "REC", "Save recorded clicks", "save", new Rectangle(10, 330, 40, 20), 12);
-        addButton(this, "CLR", "Clear recorded history", "clear", new Rectangle(40, 345, 30, 20), 12);
-        addButton(this, "SAVE", "Export the action list", "export", new Rectangle(70, 345, 35, 20), 12);
+        addButton(this, "CLR", "Clear recorded history", "clear", new Rectangle(270, 305, 30, 20), 12);
+        addButton(this, "SAVE", "Export the action list", "export", new Rectangle(270, 325, 35, 20), 12);
         //addButton(this,"RUN", "Run recorded actions", "run", new Rectangle(130, 330, 45, 20), 12);
 
         recToggleButton = new JToggleButton("REC");
-        recToggleButton.setBounds(10, 345, 30, 20);
+        recToggleButton.setBounds(270, 285, 30, 20);
         recToggleButton.setFont(new Font("Calibri", Font.PLAIN, 12));
         recToggleButton.setMargin(new Insets(2, 2, 2, 2));
         recToggleButton.setBackground(Color.WHITE); // Default to stopped state
@@ -156,12 +156,12 @@ public class ProcessPanel extends BasePanel {
 
         JLabel filesLabel = addFirstLabel(this, new Rectangle(180, 250, 120, 20), "Actions:", 14);
         //this.add(filesLabel);
-        JTextArea actionHistory = addTextArea(this, "", "", new Rectangle(10, 285, 290, 55), 12);
+        JTextArea actionHistory = addTextArea(this, "", "", new Rectangle(10, 285, 260, 60), 11);
         actionHistory.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(actionHistory);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBounds(10, 285, 290, 55);
+        scrollPane.setBounds(10, 285, 260, 60);
         this.add(scrollPane);
 
         ClickRecorder.setTextArea(actionHistory);

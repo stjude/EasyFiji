@@ -182,9 +182,10 @@ public class ChannelViews__ implements PlugIn {
 		if (dotIndex > 0) {
 			title = title.substring(0, dotIndex); // remove extension
 		}
+		title = title.replace(" ", "");
 		// Ask user where to save
-		FileDialog fd = new FileDialog(IJ.getInstance(), "Save Movie As AVI", FileDialog.SAVE);
-		fd.setFile(title + ".avi");
+		FileDialog fd = new FileDialog(IJ.getInstance(), "Save Movie As MOV", FileDialog.SAVE);
+		fd.setFile(title + ".mov");
 		fd.setVisible(true);
 
 		String dir = fd.getDirectory();
