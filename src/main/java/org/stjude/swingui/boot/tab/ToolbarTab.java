@@ -6,7 +6,6 @@ import org.stjude.swingui.boot.panel.VisualizePanel;
 import org.stjude.swingui.boot.event.TfButtonListener;
 import org.stjude.swingui.boot.panel.InfoPanel;
 import org.stjude.swingui.boot.proc.Contrast;
-import javax.swing.ToolTipManager;
 
 import java.awt.*;
 import javax.swing.*;
@@ -24,7 +23,7 @@ public class ToolbarTab extends WindowAdapter {
 	ProcessPanel processPanel; // Store reference to ProcessPanel
 
     public ToolbarTab() {
-        frameWidth = 320;
+        frameWidth = 330;
         frameHeight = 420;
 		setup();
     }
@@ -35,6 +34,20 @@ public class ToolbarTab extends WindowAdapter {
 		f.setSize(frameWidth, frameHeight);
         f.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soft close opertaions handled by windowClosing() below...
 		f.addWindowListener(this); // 'this' should recieve WindowEvents from the JFrame
+
+		// --- "Keep Top" toggle button ---
+		JToggleButton keepOnTopButton = new JToggleButton("Top");
+		keepOnTopButton.setFocusable(false);
+		keepOnTopButton.setSelected(true);
+		keepOnTopButton.setFont(new Font("Calibri", Font.PLAIN, 12));  // smaller text
+		keepOnTopButton.updateUI(); // reset
+		keepOnTopButton.setUI(new javax.swing.plaf.basic.BasicToggleButtonUI()); // remove native Aqua constraints
+		keepOnTopButton.setMargin(new Insets(1, 4, 1, 4));             // tight padding
+		keepOnTopButton.addItemListener(e -> {
+			boolean selected = keepOnTopButton.isSelected();
+			f.setAlwaysOnTop(selected);
+			keepOnTopButton.setText(selected ? "Top" : "Float");
+		});
         
 		// Provides a hondle for the VisualizePanel, which is used in response to windowActivated events below
 		vizpanel = new VisualizePanel();
@@ -42,14 +55,17 @@ public class ToolbarTab extends WindowAdapter {
 
         // Sets up the tabbed panes
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setBounds(0,0,frameWidth,frameHeight);
+        tabbedPane.setBounds(0,0,frameWidth+30,frameHeight+30);
         tabbedPane.add("Display", vizpanel); // Contrast class is instantiated w/in VisualizePanel
         tabbedPane.add("Process", processPanel);
         tabbedPane.add("Save", new RecordPanel());
 		tabbedPane.add("Image info", new InfoPanel());
+		JPanel emptyPanel = new JPanel();
+		tabbedPane.add("", emptyPanel);
+		tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, keepOnTopButton);
 		// Adds the tabbed pane to the frame
-        f.add(tabbedPane, BorderLayout.NORTH);
-
+        f.add(tabbedPane, BorderLayout.CENTER);
+		tabbedPane.setEnabledAt(tabbedPane.getTabCount() - 1, false);
 		// Pass ProcessPanel to TfButtonListener
         TfButtonListener.setProcessPanel(processPanel); // Inject existing ProcessPanel
 
@@ -63,6 +79,21 @@ public class ToolbarTab extends WindowAdapter {
 		GUI.centerOnImageJScreen(f);
 		GUI.scale(f);
 		// Displays the frame on the screen
+		// // --- "Keep Top" toggle button ---
+		// JToggleButton keepOnTopButton = new JToggleButton("Keep Top");
+		// keepOnTopButton.setBounds(280, 5, 90, 22); // Adjust for your layout
+		// keepOnTopButton.setSelected(true); // default ON
+		// keepOnTopButton.setToolTipText("Toggle whether this window stays on top of other ImageJ windows");
+		// keepOnTopButton.setVisible(true);
+		// // Listen for toggle state changes
+		// keepOnTopButton.addItemListener(e -> {
+		// 	boolean selected = keepOnTopButton.isSelected();
+		// 	f.setAlwaysOnTop(selected);
+		// 	keepOnTopButton.setText(selected ? "Keep Top" : "Float"); // optional: change label dynamically
+		// });
+		// // Add to frame
+		// f.add(keepOnTopButton);
+
 		f.setAlwaysOnTop(true);
         f.setVisible(true);
 		// tooltips waittime longer
