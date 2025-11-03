@@ -2,7 +2,9 @@
 A graphical user interface for Fiji that provides access to a curated suite of fluorescence image visualization and processing tools commonly needed by life scientists.  
 
 ## Installation
-Copy the compressed **.jar** (target/EasyFiji_2-0.2.0.jar) file into into **Fiji.app/plugins/** (MAC, similar for Windows/Linux) and restart Fiji.
+1. Launch Fiji and navigate to Help > Update.. in the menu bar. In the updater window, click Manage Update sites and Search for "EasyFiji" and click "Apply and Close". Restart Fiji to make it effect.
+2. Copy the compressed **.jar** (target/EasyFiji_2-0.2.0.jar) file into into **Fiji.app/plugins/** (MAC, similar for Windows/Linux) and restart Fiji.
+
 ### System plugin specifications
 This plugin has been tested and verified on Mac(Apple silicon), linux and windows to ensure cross-platform compatibility and ease of setup. And also compatiable with ImageJ and Fiji.
 ### Dependencies
