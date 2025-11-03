@@ -40,24 +40,24 @@ public class InfoPanel extends BasePanel {
 
         JLabel channelLabel = addFirstLabel(this, new Rectangle(10, 5, 200, 20), "Channel Info：", 14);
         this.add(channelLabel);
-        this.channelInfoTextArea = addTextArea(this, "", "", new Rectangle(10, 30, 290, 110), 12);
+        this.channelInfoTextArea = addTextArea(this, "", "", new Rectangle(10, 30, 310, 110), 12);
         channelInfoTextArea.setLineWrap(true);
 
         JScrollPane channelscrollPane = new JScrollPane(channelInfoTextArea);
         channelscrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         channelscrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        channelscrollPane.setBounds(10, 30, 290, 110);
+        channelscrollPane.setBounds(10, 30, 310, 110);
         this.add(channelscrollPane);
 
         JLabel acquistionLabel = addFirstLabel(this, new Rectangle(10, 150, 200, 20), "System configuration：", 14);
         this.add(acquistionLabel);
-        this.acquistionInfoTextArea = addTextArea(this, "", "", new Rectangle(10, 175, 290, 70), 12);
+        this.acquistionInfoTextArea = addTextArea(this, "", "", new Rectangle(10, 175, 310, 70), 12);
         acquistionInfoTextArea.setLineWrap(true);
 
         JScrollPane acquistionscrollPane = new JScrollPane(acquistionInfoTextArea);
         acquistionscrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         acquistionscrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        acquistionscrollPane.setBounds(10, 175, 290, 70);
+        acquistionscrollPane.setBounds(10, 175, 310, 70);
         this.add(acquistionscrollPane);                      
 
 

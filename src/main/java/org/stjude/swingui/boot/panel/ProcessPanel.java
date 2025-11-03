@@ -28,7 +28,7 @@ public class ProcessPanel extends BasePanel {
 
 
         //Added label and its respective fields with slider and text box for Features
-        JLabel featuresLabel = addFirstLabel(this, new Rectangle(10, 5, 200, 20), "Modify Channel Features:", 14);
+        JLabel featuresLabel = addFirstLabel(this, new Rectangle(10, 5, 220, 20), "Modify Channel Features:", 14);
         //added elements to panel
         this.add(featuresLabel);
 
@@ -74,7 +74,7 @@ public class ProcessPanel extends BasePanel {
         addTfButton(this, sharpenTextField, "OK", "Alters data", "sharpen", new Rectangle(290, 80, 25, 20),12);
 
         //Added label and its respective fields with slider and text box for Intensities
-        addLabel(this, "Modify Channel Intensities:", "", new Rectangle(10, 110, 200, 20), 14);
+        addLabel(this, "Modify Channel Intensities:", "", new Rectangle(10, 110, 220, 20), 14);
 
         // Sub Bkgd
         addLabel(this, "Sub. Bkgd", "Rolling ball. Larger values remove less background.", new Rectangle(10, 135, 80, 20), 12);
@@ -100,7 +100,7 @@ public class ProcessPanel extends BasePanel {
         //addTfButton(this, null, "OK", "Apply LUTs", "multiply", new Rectangle(250, 185, 25, 20), 12);
 
         // bleach correction
-        addLabel(this, "Intensity Correction", "Bleach or scatter correction across z-slices", new Rectangle(10, 210, 125, 20), 12);
+        addLabel(this, "Intensity Correction", "Bleach or scatter correction across z-slices", new Rectangle(10, 210, 150, 20), 12);
         addTfButton(this, null, "Global", "Systematic slice intensity adjustment", "global corr", new Rectangle(170, 210, 45, 20), 12);
         addTfButton(this, null, "Local", "Local slice intensity adjustment", "local corr", new Rectangle(215, 210, 40, 20), 12);
         addTfButton(this, null, "Equalize", "Makes slice intensities equal", "equalize corr", new Rectangle(255, 210, 60, 20), 12);
@@ -117,13 +117,13 @@ public class ProcessPanel extends BasePanel {
 
 
 		// ---- Modify Dimensions Label ------- 
-        addLabel(this, "Modify Dimensions:", "", new Rectangle(10, 240, 150, 20), 14);
+        addLabel(this, "Modify Dimensions:", "", new Rectangle(10, 240, 170, 20), 14);
         addButton(this, "Rotate", "Uses bilinear interpolation", "rotate", new Rectangle(190, 240, 45, 20), 12);
         addButton(this, "Crop", "Use Subset to crop in Z", "crop", new Rectangle(235, 240, 35, 20), 12);
         addButton(this, "Subset", "Reshape non-XY dimensions (ch,z,t)", "subset", new Rectangle(270, 240, 45, 20), 12);
         //addButton(this, "ChOrder", "Change channel order", "reorder", new Rectangle(260, 240, 55, 20), 12);
         // ---- record action listeners ----
-        addLabel(this, "Record Actions:", "", new Rectangle(10, 265, 120, 20), 14);
+        addLabel(this, "Record Actions:", "", new Rectangle(10, 265, 140, 20), 14);
         //addButton(this, "REC", "Save recorded clicks", "save", new Rectangle(10, 330, 40, 20), 12);
         addButton(this, "CLR", "Clear recorded history", "clear", new Rectangle(285, 305, 30, 20), 12);
         addButton(this, "SAVE", "Export the action list", "export", new Rectangle(280, 325, 35, 20), 12);
