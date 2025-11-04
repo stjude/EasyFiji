@@ -23,12 +23,24 @@ public class ToolbarTab extends WindowAdapter {
 	ProcessPanel processPanel; // Store reference to ProcessPanel
 
     public ToolbarTab() {
-        frameWidth = 360;
+        frameWidth = 350;
         frameHeight = 420;
 		setup();
     }
 
     private void setup(){
+
+		try {
+        // Classic, consistent across all Java versions (recommended for ImageJ plugins)
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+
+        // Optional alternative: Modern look (safe from Java 6–21)
+        // UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch (Exception e) {
+			IJ.log("Failed to set Look & Feel: " + e.getMessage());
+		}
+
+
         // Sets up the frame
 		f = new JFrame("Easy Fiji");
 		f.setSize(frameWidth, frameHeight);

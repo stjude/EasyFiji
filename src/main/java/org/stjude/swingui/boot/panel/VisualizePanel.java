@@ -426,14 +426,13 @@ public class VisualizePanel extends BasePanel {
 		this.add(l2);
 		//addButton(this, "Panelize", "Displays each channel in its own panel(default: tiled view)", "panelize", new Rectangle(10, 220, 60, 20), 12);
 
-		addButton(this, "FFColoc", coloc_tt, "coloc", new Rectangle(10, 220, 50, 20), 12);
+		addButton(this, "FFColoc", coloc_tt, "coloc", new Rectangle(10, 220, 60, 20), 12);
 		
-		addButton(this, "FFMerge", pup_tt, "pup", new Rectangle(60, 220, 55, 20), 12);
+		addButton(this, "FFMerge", pup_tt, "pup", new Rectangle(70, 220, 60, 20), 12);
 
-		addButton(this, "FGMerge", fluogray_tt, "ColorFusion", new Rectangle(115, 220, 60, 20), 12);
-
-		addButton(this, "Montage", "Array channels individually", "montage", new Rectangle(10, 240, 55, 20), 12);
-		addButton(this, "SyncWins", "Sync actions across image windows", "sync", new Rectangle(65, 240, 60, 20), 12);
+		addButton(this, "FGMerge", fluogray_tt, "ColorFusion", new Rectangle(130, 220, 70, 20), 12);
+		addButton(this, "Montage", "Array channels individually", "montage", new Rectangle(10, 240, 60, 20), 12);
+		addButton(this, "SyncWins", "Sync actions across image windows", "sync", new Rectangle(70, 240, 70, 20), 12);
 
 		
 		
@@ -461,22 +460,22 @@ public class VisualizePanel extends BasePanel {
         //button MIP, SIP, Ortho., D3, Kymo
         addButton(this, "MIP", "Maximum intensity projection", "mip", new Rectangle(10, 290, 30, 20), 12);
         addButton(this, "SIP","Sum slices projection", "sip", new Rectangle(40, 290, 30, 20), 12);
-		addButton(this, "Ortho", "Orthogonal slices view", "ortho", new Rectangle(70, 290, 40, 20), 12);
+		addButton(this, "Ortho", "Orthogonal slices view", "ortho", new Rectangle(70, 290, 45, 20), 12);
         //addButton(this, "3D", "A basic 3D viewer", "3D", new Rectangle(80, 320, 30, 20), 12);
-        addButton(this, "Kymo", "Kymograph (requires plugin)", "kymo", new Rectangle(110, 290, 40, 20), 12);
+        addButton(this, "Kymo", "Kymograph (requires plugin)", "kymo", new Rectangle(115, 290, 45, 20), 12);
 		//addButton(this, "Montage", "Montage of slices", "montage", new Rectangle(255, 290, 60, 20), 12);
 		
 		// // --- Scale Bar ----
-		addLabel(this, "Scale:", "Adds scale bar as overlay", new Rectangle(235, 265, 80, 20), 14);
-		addButton(this, "|- um -|", "Display scalebar", "um", new Rectangle(235, 290, 55, 20), 12);
+		addLabel(this, "Scale:", "Adds scale bar as overlay", new Rectangle(250, 265, 80, 20), 14);
+		addButton(this, "|- um -|", "Display scalebar", "um", new Rectangle(250, 290, 60, 20), 12);
 
 		// --- Snap View ----
-		addLabel(this, "Copy:", "", new Rectangle(155, 265, 80, 20), 14);
-		addButton(this, "Dup", "Duplicate image", "dup", new Rectangle(155, 290, 30, 20), 12);
-		addButton(this, "ToClip", "Copy display to clipboard", "copy", new Rectangle(185, 290, 45, 20), 12);
+		addLabel(this, "Copy:", "", new Rectangle(160, 265, 80, 20), 14);
+		addButton(this, "Dup", "Duplicate image", "dup", new Rectangle(160, 290, 40, 20), 12);
+		addButton(this, "ToClip", "Copy display to clipboard", "copy", new Rectangle(200, 290, 50, 20), 12);
 
 
-		addLabel(this, "VERSION: 1.1.1", "version number", new Rectangle(10, 320, 120, 20), 10);
+		addLabel(this, "VERSION: 1.2.0", "version number", new Rectangle(10, 320, 150, 20), 11);
 
 
 		

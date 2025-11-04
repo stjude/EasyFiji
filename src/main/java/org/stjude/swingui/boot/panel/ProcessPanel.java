@@ -31,7 +31,7 @@ public class ProcessPanel extends BasePanel {
         JLabel featuresLabel = addFirstLabel(this, new Rectangle(10, 5, 220, 20), "Modify Channel Features:", 14);
         //added elements to panel
         this.add(featuresLabel);
-
+        addLabel(this, "Undo", "", new Rectangle(250, 5, 50, 20), 12);
         // add a revert button to unprocess image
         //addButton(this, "Revert", "reset to original setting", "revert", new Rectangle(200, 5, 55, 20), 12);
 
@@ -43,7 +43,7 @@ public class ProcessPanel extends BasePanel {
         // addButton(this, "\u27F2", "Reverts last step", "undo", new Rectangle(275, 160, 30, 20), 24);
         // addButton(this, "\u27F2", "Reverts last step", "undo", new Rectangle(275, 185, 30, 20), 24);
 
-        addIconButton(this, "undo.png", "Revert last step, unavailable if image is too large.", "undo", 290, 5);
+        addIconButton(this, "undo.png", "Revert last step, unavailable if image is too large.", "undo", 292, 5);
         //addIconButton(this, "undo.png", "Revert last step, unavailable if image is too large.", "undo", 290, 55);
         //addIconButton(this, "undo.png", "Revert last step, unavailable if image is too large.", "undo", 290, 80);
         //addIconButton(this, "undo.png", "Revert last step, unavailable if image is too large.", "undo", 290, 135);
@@ -56,7 +56,7 @@ public class ProcessPanel extends BasePanel {
         JTextField blurTextField = addTextField(this, "1.0", "XY radius in pixels. Z radius = 0.3*X", new Rectangle(240, 30, 50, 20), 12);
         //slider ints are later DIVIDED BY 2 to normalize into half unit increments
 		addSlider(this, blurTextField, 16, 2, 2, sliderwidth, 80, 30);  // last two ints are x_pos, y_pos
-        addTfButton(this, blurTextField, "OK", "Alters data", "smooth", new Rectangle(290, 30, 25, 20), 12);
+        addTfButton(this, blurTextField, "OK", "Alters data", "smooth", new Rectangle(290, 30, 27, 20), 12);
 
         
 
@@ -65,13 +65,13 @@ public class ProcessPanel extends BasePanel {
         addLabel(this, "Denoise", "Median filter", new Rectangle(10, 55, 60, 25), 12);
         JTextField medianTextField = addTextField(this, "0.5", "Radius in pixels", new Rectangle(240, 55, 50, 20), 12);
         addSlider(this, medianTextField, 16, 1, 2, sliderwidth, 80, 55);
-        addTfButton(this, medianTextField, "OK", "Alters data", "denoise", new Rectangle(290, 55, 25, 20), 12);
+        addTfButton(this, medianTextField, "OK", "Alters data", "denoise", new Rectangle(290, 55, 27, 20), 12);
 
         //sharpen
         addLabel(this, "Sharpen", "Unsharp mask", new Rectangle(10, 80, 60, 20), 12);
         JTextField sharpenTextField = addTextField(this, "3.0", "Radius in pixels", new Rectangle(240, 80, 50, 20), 12);
         addSlider(this, sharpenTextField, 20, 2, 2, sliderwidth, 80, 80);
-        addTfButton(this, sharpenTextField, "OK", "Alters data", "sharpen", new Rectangle(290, 80, 25, 20),12);
+        addTfButton(this, sharpenTextField, "OK", "Alters data", "sharpen", new Rectangle(290, 80, 27, 20),12);
 
         //Added label and its respective fields with slider and text box for Intensities
         addLabel(this, "Modify Channel Intensities:", "", new Rectangle(10, 110, 220, 20), 14);
@@ -80,14 +80,14 @@ public class ProcessPanel extends BasePanel {
         addLabel(this, "Sub. Bkgd", "Rolling ball. Larger values remove less background.", new Rectangle(10, 135, 80, 20), 12);
         JTextField subBkgdTextField = addTextField(this, "20.0", "Radius in pixels", new Rectangle(240, 135, 50, 20),12);
         addSlider(this, subBkgdTextField, 100, 20, 1, sliderwidth, 80, 135);
-        addTfButton(this, subBkgdTextField, "OK", "Alters data", "subbkgd", new Rectangle(290, 135, 25, 20),12);
+        addTfButton(this, subBkgdTextField, "OK", "Alters data", "subbkgd", new Rectangle(290, 135, 27, 20),12);
 
         //Gamma
         addLabel(this, "Gamma", "Accentuates dim signal", new Rectangle(10, 160, 70, 20), 12);
         JTextField gammaTextField = addTextField(this, "0.8", "0-1; smaller values equate to larger effect", new Rectangle(240, 160, 50, 20), 12);
         // This slider value will have to be further normalized to get doubles over range 0-1...
 		addSlider(this, gammaTextField, 100, 20, 100, sliderwidth, 80, 160);
-        addTfButton(this, gammaTextField, "OK", "Alters data", "gamma", new Rectangle(290, 160, 25, 20), 12);
+        addTfButton(this, gammaTextField, "OK", "Alters data", "gamma", new Rectangle(290, 160, 27, 20), 12);
 
         //Multiply
         addLabel(this, "Apply LUTs", "Apply LUTs", new Rectangle(10, 185, 90, 20), 12);
@@ -101,7 +101,7 @@ public class ProcessPanel extends BasePanel {
 
         // bleach correction
         addLabel(this, "Intensity Correction", "Bleach or scatter correction across z-slices", new Rectangle(10, 210, 150, 20), 12);
-        addTfButton(this, null, "Global", "Systematic slice intensity adjustment", "global corr", new Rectangle(170, 210, 45, 20), 12);
+        addTfButton(this, null, "Global", "Systematic slice intensity adjustment", "global corr", new Rectangle(165, 210, 50, 20), 12);
         addTfButton(this, null, "Local", "Local slice intensity adjustment", "local corr", new Rectangle(215, 210, 40, 20), 12);
         addTfButton(this, null, "Equalize", "Makes slice intensities equal", "equalize corr", new Rectangle(255, 210, 60, 20), 12);
 
@@ -118,19 +118,19 @@ public class ProcessPanel extends BasePanel {
 
 		// ---- Modify Dimensions Label ------- 
         addLabel(this, "Modify Dimensions:", "", new Rectangle(10, 240, 170, 20), 14);
-        addButton(this, "Rotate", "Uses bilinear interpolation", "rotate", new Rectangle(190, 240, 45, 20), 12);
-        addButton(this, "Crop", "Use Subset to crop in Z", "crop", new Rectangle(235, 240, 35, 20), 12);
-        addButton(this, "Subset", "Reshape non-XY dimensions (ch,z,t)", "subset", new Rectangle(270, 240, 45, 20), 12);
+        addButton(this, "Rotate", "Uses bilinear interpolation", "rotate", new Rectangle(175, 240, 50, 20), 12);
+        addButton(this, "Crop", "Use Subset to crop in Z", "crop", new Rectangle(225, 240, 40, 20), 12);
+        addButton(this, "Subset", "Reshape non-XY dimensions (ch,z,t)", "subset", new Rectangle(265, 240, 50, 20), 12);
         //addButton(this, "ChOrder", "Change channel order", "reorder", new Rectangle(260, 240, 55, 20), 12);
         // ---- record action listeners ----
         addLabel(this, "Record Actions:", "", new Rectangle(10, 265, 140, 20), 14);
         //addButton(this, "REC", "Save recorded clicks", "save", new Rectangle(10, 330, 40, 20), 12);
-        addButton(this, "CLR", "Clear recorded history", "clear", new Rectangle(285, 305, 30, 20), 12);
-        addButton(this, "SAVE", "Export the action list", "export", new Rectangle(280, 325, 35, 20), 12);
+        addButton(this, "CLR", "Clear recorded history", "clear", new Rectangle(280, 305, 35, 20), 12);
+        addButton(this, "SAVE", "Export the action list", "export", new Rectangle(275, 325, 40, 20), 12);
         //addButton(this,"RUN", "Run recorded actions", "run", new Rectangle(130, 330, 45, 20), 12);
 
         recToggleButton = new JToggleButton("REC");
-        recToggleButton.setBounds(285, 285, 30, 20);
+        recToggleButton.setBounds(280, 285, 35, 20);
         recToggleButton.setFont(new Font("Calibri", Font.PLAIN, 12));
         recToggleButton.setMargin(new Insets(2, 2, 2, 2));
         recToggleButton.setBackground(Color.WHITE); // Default to stopped state
@@ -156,12 +156,12 @@ public class ProcessPanel extends BasePanel {
 
         JLabel filesLabel = addFirstLabel(this, new Rectangle(180, 250, 120, 20), "Actions:", 14);
         //this.add(filesLabel);
-        JTextArea actionHistory = addTextArea(this, "", "", new Rectangle(10, 285, 270, 60), 11);
+        JTextArea actionHistory = addTextArea(this, "", "", new Rectangle(10, 285, 260, 60), 11);
         actionHistory.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(actionHistory);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBounds(10, 285, 270, 60);
+        scrollPane.setBounds(10, 285, 260, 60);
         this.add(scrollPane);
 
         ClickRecorder.setTextArea(actionHistory);

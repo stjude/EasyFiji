@@ -14,7 +14,7 @@
 
 	<groupId>org.stjude.lightmicroscopy</groupId>        <!-- FIXME: Your organization groupId here -->
 	<artifactId>EasyFiji_2</artifactId> <!-- FIXME: Your project artifactId here   -->
-	<version>0.2.0</version>
+	<version>1.2.0</version>
 
 	<repositories>
 		<repository>
