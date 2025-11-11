@@ -28,7 +28,7 @@ The compiled **.jar** file will appear in target folder.
 ## Troubleshooting Guide
 
 ### EasyFiji can not be found in the **Plugins** menu.
-Make sure EasyFiji_2-0.2.0.jar is insdie the plugins folder of Fiji and restart.
+Make sure EasyFiji_2-*.*.*.jar is insdie the plugins folder of Fiji and restart.
 ### Buttons/Sliders Don't respond
 Images must be opened and selected (active window). 
 ### Fiji Freezes or GUI Becomes Unresponsive
