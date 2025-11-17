@@ -1,5 +1,5 @@
 # 🔬 EasyFiji: A Graphical User Interface for User-Friendly Bioimage Processing in Fiji 🖼️
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 A graphical user interface for Fiji that provides access to a curated suite of fluorescence image visualization and processing tools commonly needed by life scientists.  
 
@@ -45,6 +45,6 @@ EasyFiji use features that that are bundled with newer version of Fiji like Kymo
 If you encounter a bug, installation problem, or unexpected behavior, please create a issue through the project's GitHub page. (please include operating system, fiji version, steps to reproduce the error, possible example image, error messages, screenshots if available)
 
 ## 📄 License
-Released under the MIT License. See [LICENSE](LICENSE) file for details.
+Released under the Apache License 2.0. See [LICENSE](LICENSE) file for details.
 
 
