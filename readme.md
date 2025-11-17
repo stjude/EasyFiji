@@ -4,7 +4,7 @@
 A graphical user interface for Fiji that provides access to a curated suite of fluorescence image visualization and processing tools commonly needed by life scientists.  
 
 ## 📥 Installation
-Please consult the [wiki page](https://github.com/stjude/EasyFiji/wiki).
+Please consult the [wiki page](https://github.com/stjude/EasyFiji/wiki). 
 
 ### 💻 System specifications
 EasyFiji has been tested on Mac, Linux and Windows to ensure cross-platform compatibility. 
