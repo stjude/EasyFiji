@@ -28,7 +28,7 @@ public class RecordPanel extends BasePanel {
 		// TIF Option
         //JLabel filesLabel = addFirstLabel(this, new Rectangle(55, 30, 120, 20), "as raw data (tif)", 14);
         //this.add(filesLabel);
-		addLabel(this, "Save Steps?", "Logs all steps applied to image and export as txt file", new Rectangle(190, 30, 80, 20), 12);
+		addLabel(this, "Save actions?", "Logs all steps applied to image and export as txt file", new Rectangle(190, 30, 80, 20), 12);
 		JCheckBox checkBox = addCheckBox(this, "", 270, 30);
 		addCbButton(this, checkBox, "Save as raw data (tif)", "Preserves channels and pixel values as acquired", "stif", new Rectangle(10, 30, 170, 20), 12);
 		
