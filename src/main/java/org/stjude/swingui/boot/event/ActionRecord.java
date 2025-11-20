@@ -8,12 +8,14 @@ public class ActionRecord {
     private final double[] params;
     private final int channel;
     private final long timestamp;
+    private final String imageName;
 
-    public ActionRecord(String actionId, double[] params, int channel) {
+    public ActionRecord(String actionId, double[] params, int channel, String imageName) {
         this.actionId = actionId;
         this.params = params;
         this.channel = channel;
         this.timestamp = System.currentTimeMillis();
+        this.imageName = imageName != null ? imageName : "Unknown";
     }
 
     public String getActionId() {
@@ -46,6 +48,10 @@ public class ActionRecord {
 
     public String getChannelLabel() {
         return (channel == -1) ? "All" : String.valueOf(channel);
+    }
+
+    public String getImageName() {
+        return imageName;
     }
 
     @Override

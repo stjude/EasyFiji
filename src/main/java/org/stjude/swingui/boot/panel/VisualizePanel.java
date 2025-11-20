@@ -121,7 +121,7 @@ public class VisualizePanel extends BasePanel {
 
 
        // label on gain slider
-        addLabel(this, "Gain:", "Increase brightness", new Rectangle(10, 115, 50, 20), 12);
+        addLabel(this, "Gain:", "Set value of white level", new Rectangle(10, 115, 50, 20), 12);
 		//addButton(this, "Reset", "reset gain value", "resetMax", new Rectangle(260, 115, 45, 20), 12);
 		JButton resetMax = new JButton("Reset");
 		resetMax.setBounds(new Rectangle(220, 115, 45, 20));
@@ -133,7 +133,7 @@ public class VisualizePanel extends BasePanel {
 	
 
 		// // label on offset slider
-        addLabel(this, "Offset:", "Increase blackness", new Rectangle(10, 140, 50, 20), 12);
+        addLabel(this, "Offset:", "Set value of black level", new Rectangle(10, 140, 50, 20), 12);
 		//addButton(this, "Reset", "reset offset value", "resetMin", new Rectangle(260, 140, 45, 20), 12);
 		JButton resetMin = new JButton("Reset");
 		resetMin.setBounds(new Rectangle(220, 140, 45, 20));
@@ -413,16 +413,17 @@ public class VisualizePanel extends BasePanel {
 
         // --- Channel Views Label ---
 		// Paragraph tooltip texts
-		String coloc_tt = "<html><p style="+"width:300px;"+">Highlight colocalized pixels across two fluorescence channels</p></html>";
-		String pup_tt = "<html><p style="+"width:300px;"+">Merge display of two fluorescence channels</p></html>";
-		String fluogray_tt = "<html><p style="+"width:300px;"+">Merge display of a fluorescence and grayscale channel</p></html>";
+		String coloc_tt = "<html><p style="+"width:300px;"+">Highlights qualitatively colocalized pixels across two fluorescence channels</p></html>";
+		String pup_tt = "<html><p style="+"width:300px;"+">Renders two fluorescence channels as equally perceptible</p></html>";
+		String fluogray_tt = "<html><p style="+"width:300px;"+">Renders fluorescence and a grayscale channel, preserving grayscale contrast</p></html>";
         
-		addLabel(this, "Channel Views:", "", new Rectangle(10, 195, 140, 20), 14);
+		addLabel(this, "Channel Views:", "", new Rectangle(10, 195, 130, 20), 14);
 		JLabel l2 = new JLabel();
-		String htmlText = "<html><span style='color:#8B0000;'>Pre-Apply Proper Gain and Offset</span></html>";
+		String htmlText = "<html><span style='color:#8B0000;'>*NOTE*</span></html>";
 		l2.setText(htmlText);
-		l2.setBounds(new Rectangle(150, 195, 200, 20));
-		l2.setFont(new Font("Calibri", Font.PLAIN, 11));
+		l2.setBounds(new Rectangle(130, 195, 200, 20));
+		l2.setFont(new Font("Calibri", Font.PLAIN, 12));
+		l2.setToolTipText("<html>Use Process Panel to Apply desired Gain and Offset<br>before creating Channel Views</html>");
 		this.add(l2);
 		//addButton(this, "Panelize", "Displays each channel in its own panel(default: tiled view)", "panelize", new Rectangle(10, 220, 60, 20), 12);
 
@@ -462,17 +463,17 @@ public class VisualizePanel extends BasePanel {
         addButton(this, "SIP","Sum slices projection", "sip", new Rectangle(50, 290, 40, 20), 12);
 		addButton(this, "Ortho", "Orthogonal slices view", "ortho", new Rectangle(90, 290, 50, 20), 12);
         //addButton(this, "3D", "A basic 3D viewer", "3D", new Rectangle(80, 320, 30, 20), 12);
-        addButton(this, "Kymo", "Kymograph (requires plugin)", "kymo", new Rectangle(140, 290, 50, 20), 12);
+        addButton(this, "Kymo", "Kymograph", "kymo", new Rectangle(140, 290, 50, 20), 12);
 		//addButton(this, "Montage", "Montage of slices", "montage", new Rectangle(255, 290, 60, 20), 12);
 		
 		// // --- Scale Bar ----
 		addLabel(this, "Scale:", "Adds scale bar as overlay", new Rectangle(290, 265, 80, 20), 14);
-		addButton(this, "|- um -|", "Display scalebar", "um", new Rectangle(290, 290, 60, 20), 12);
+		addButton(this, "|- um -|", "Overlay scale bar", "um", new Rectangle(290, 290, 60, 20), 12);
 
 		// --- Snap View ----
 		addLabel(this, "Copy:", "", new Rectangle(190, 265, 80, 20), 14);
-		addButton(this, "Dup", "Duplicate image", "dup", new Rectangle(190, 290, 50, 20), 12);
-		addButton(this, "ToClip", "Copy display to clipboard", "copy", new Rectangle(240, 290, 50, 20), 12);
+		addButton(this, "Dup", "Duplicate image in Fiji", "dup", new Rectangle(190, 290, 50, 20), 12);
+		addButton(this, "ToClip", "Copy image display to system clipboard", "copy", new Rectangle(240, 290, 50, 20), 12);
 
 
 		addLabel(this, "VERSION: 1.3.0", "version number", new Rectangle(10, 330, 150, 20), 11);

@@ -51,7 +51,7 @@ public class RecordPanel extends BasePanel {
         //this.add(FourLabel);
 
 		// AVI Option
-		addButton(this, "Save as movie (mov)", "Save as .mov movie. Note: NO SPACE in the output file name!, some systems may have trouble opening .mov format files. Please install VLC for playback.", "saveMovie", new Rectangle(10, 160, 170, 20), 12);
+		addButton(this, "Save as movie (mov)", "<html>Save as .mov movie. Note: NO SPACE in the output file name!<br>Some systems may have trouble opening .mov format files. Please install VLC for playback.</html>", "saveMovie", new Rectangle(10, 160, 170, 20), 12);
 
 		// addLabel(this, "Quality Level:", "AVI compression level", new Rectangle(10, 200, 100, 16), 12);
 		// JTextField aviTextField = addTextField(this, "60", "50-80 recommended", new Rectangle(110, 220, 50, 20), 12);

@@ -1,4 +1,4 @@
-# 🔬 EasyFiji: A Graphical User Interface for User-Friendly Bioimage Processing in Fiji 🖼️
+# 🔬 EasyFiji:  A Graphical Interface for User-Friendly Fluorescence Image Processing in Fiji 🖼️
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A graphical user interface for Fiji that provides access to a curated suite of fluorescence image visualization and processing tools commonly needed by life scientists.  
@@ -22,10 +22,6 @@ This Fiji GUI plugin is developed using the **[SciJava](https://scijava.org)** f
 | **IDE** | VScode (1.104.2) |
 | **Build Tool** | Maven (builds `.jar` under `/target`) |
 | **ImageJ** | 1.54p |
-
-## 🔨 How to build
-Developers can easily extend it by adding new panels, button listeners, or processing classes following the same event-driven design pattern. after modify, type "mvn clean install" to generate new .jar file. 
-The compiled **.jar** file will appear in target folder.
 
 ## 🐛 Troubleshooting Guide
 
