@@ -94,7 +94,7 @@ public class ProcessPanel extends BasePanel {
         addTfButton(this, gammaTextField, "OK", "Alters data", "gamma", new Rectangle(290, 160, 27, 20), 12);
 
         //Multiply
-        addLabel(this, "Apply LUTs", "Apply LUTs", new Rectangle(10, 185, 90, 20), 12);
+        addLabel(this, "Apply Gain and Offset", "Apply Gain and Offset", new Rectangle(10, 185, 200, 20), 12);
         //JTextField multiplyTextField = addTextField(this, "1.0", "0-10; fold change", new Rectangle(200, 185, 50, 20), 12);
         // This slider value will have to be further normalized to get doubles over range 0-1...
 		//addSlider(this, multiplyTextField, 100, 10, 10, sliderwidth, 70, 185);

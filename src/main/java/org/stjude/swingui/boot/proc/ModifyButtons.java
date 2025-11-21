@@ -1,10 +1,9 @@
 package org.stjude.swingui.boot.proc;
 
 import ij.*;
-import ij.process.*;
 import ij.gui.*;
 import ij.plugin.*; 
-import ij.plugin.filter.*; 
+import ij.plugin.filter.*;
 import emblcmci.*; // add jar of package to class path on compile
 import java.awt.*;
 import java.awt.event.*;
@@ -13,17 +12,8 @@ import javax.swing.*;
 
 import org.stjude.swingui.boot.panel.InfoPanel;
 
-import loci.common.services.ServiceFactory;
-import loci.formats.ImageReader;
-import loci.formats.meta.IMetadata;
-import loci.formats.services.OMEXMLService;
-import ome.xml.meta.OMEXMLMetadata;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.*;
 import java.io.InputStream;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 
 public class ModifyButtons implements ActionListener {
 
@@ -206,280 +196,301 @@ public class ModifySliders_ implements PlugIn {
 	
 
 	public void info() { 
-		// Applies to all channels
-		//imp = WindowManager.getCurrentImage(); 
+		// Run macro and extract results to InfoPanel
 		ImagePlus imp = IJ.getImage();
 		if (imp == null) {
+			IJ.showMessage("Error", "No image is open.");
 			return;
 		}
-		String metadata = imp.getInfoProperty();
-		//String metadata = imp.getProperty("Info");
-		//String metadta = new Info().getImageInfo(imp, imp.getProcessor());
-        if (metadata == null) {
-            IJ.showMessage("Error", "No metadata found for this image.");
-            return;
-        }
-
-		//String filePath = imp.getOriginalFileInfo() != null ? imp.getOriginalFileInfo().directory + imp.getOriginalFileInfo().fileName : null;
-        String filePath = imp.getTitle();
-		if (filePath == null) {
-            JOptionPane.showMessageDialog(null, "Cannot determine file type.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-		//IJ.showMessage(filePath);
-		// Locate InfoPanel within ToolbarTab dynamically
-        SwingUtilities.invokeLater(() -> {
-            InfoPanel infoPanel = findInfoPanel();
-            if (infoPanel != null) {
-                //infoPanel.updateMetadata(metadata);
-				infoPanel.extractChannelInfo(metadata, filePath);
-            } else {
-                IJ.showMessage("Metadata", metadata);
-            }
-        });
-
+		
+		// Close any existing metadata window first
+		closeMetadataWindow();
+		
+		// Run the MetaDataParser2.ijm macro in background thread
+		new Thread(() -> {
+			try {
+				String macroPath = extractResourceToTemp("/scripts/MetaDataParser2.ijm");
+				if (macroPath == null) {
+					SwingUtilities.invokeLater(() -> {
+						IJ.showMessage("Error", "Could not load MetaDataParser2.ijm");
+					});
+					return;
+				}
+				
+				System.out.println("Running macro: " + macroPath);
+				IJ.runMacroFile(macroPath);
+				System.out.println("Macro completed");
+				
+				// Wait briefly for window to be created, then extract data
+				Thread.sleep(300);
+				
+				SwingUtilities.invokeLater(() -> {
+					// Debug: List all open frames
+					Frame[] frames = Frame.getFrames();
+					System.out.println("Total frames open: " + frames.length);
+					for (Frame frame : frames) {
+						System.out.println("Frame title: " + frame.getTitle());
+					}
+					
+					InfoPanel infoPanel = findInfoPanel();
+					System.out.println("InfoPanel found: " + (infoPanel != null));
+					
+					if (infoPanel != null) {
+						String channelInfo = extractChannelInfoFromWindow();
+						String systemConfig = extractSystemConfigFromWindow();
+						
+						System.out.println("Channel info: " + channelInfo.substring(0, Math.min(100, channelInfo.length())));
+						System.out.println("System config: " + systemConfig);
+						
+						if (channelInfo.equals("No metadata window found") || systemConfig.equals("No metadata window found")) {
+							infoPanel.setChannelInfo("Error: Could not extract metadata");
+							infoPanel.setSystemConfig("Please try again or check if image has metadata");
+						} else {
+							infoPanel.setChannelInfo(channelInfo);
+							infoPanel.setSystemConfig(systemConfig);
+							System.out.println("Data set to InfoPanel successfully");
+						}
+						
+						// Close the metadata window
+						closeMetadataWindow();
+					} else {
+						System.out.println("ERROR: InfoPanel not found!");
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+				SwingUtilities.invokeLater(() -> {
+					IJ.showMessage("Error", "Failed to run metadata parser: " + e.getMessage());
+				});
+			}
+		}).start();
+	}
+	
+	private String extractChannelInfoFromWindow() {
+		// Array.show() creates a TextWindow with the name "image_metadata"
+		Frame[] frames = Frame.getFrames();
+		for (Frame frame : frames) {
+			if (frame.getTitle().equals("image_metadata")) {
+				ij.text.TextWindow tw = (ij.text.TextWindow) frame;
+				ij.text.TextPanel tp = tw.getTextPanel();
+				String text = tp.getText();
+				
+				// Parse the text - skip header line and first 5 data rows (system config)
+				StringBuilder channelInfo = new StringBuilder();
+				String[] lines = text.split("\n");
+				String[] channelLabels = {"Laser Power", "Laser", "Band Pass", "Gain", "Pinhole"};
+				
+				int channelNum = 1;
+				int propertyIndex = 0;
+				
+				// Start from row 6 (index 6: header=0, system rows=1-5, channels start at 6)
+				for (int i = 6; i < lines.length; i++) {
+					String line = lines[i];
+					String[] parts = line.split("\t");
+					
+					if (parts.length >= 1) {
+						// Every 5 rows is a new channel
+						if (propertyIndex == 0) {
+							if (channelNum > 1) {
+								channelInfo.append("\n");
+							}
+							channelInfo.append("Ch").append(channelNum).append("\n");
+							channelNum++;
+						}
+						
+						String value = parts.length >= 2 ? parts[1] : parts[0];
+						
+						// Round Laser and Band Pass to 2 decimal places
+						if (propertyIndex == 1) { // Laser
+							try {
+								String numericPart = value.replaceAll("[^0-9.-]", "");
+								if (!numericPart.isEmpty()) {
+									double numValue = Double.parseDouble(numericPart);
+									String unit = value.replaceAll("[0-9.-]", "").trim();
+									value = String.format("%.2f %s", numValue, unit);
+								}
+							} catch (Exception e) {
+								// Keep original value if parsing fails
+							}
+						} else if (propertyIndex == 2) { // Band Pass (format: "500 - 550 nm")
+							try {
+								// Split by hyphen or dash to get two numbers
+								String[] range = value.split("[-–]");
+								if (range.length == 2) {
+									String start = range[0].trim().replaceAll("[^0-9.]", "");
+									String end = range[1].trim().replaceAll("[^0-9.]", "");
+									String unit = value.replaceAll("[0-9.\\s-–]", "").trim();
+									
+									double startNum = Double.parseDouble(start);
+									double endNum = Double.parseDouble(end);
+									value = String.format("%.2f - %.2f %s", startNum, endNum, unit);
+								}
+							} catch (Exception e) {
+								// Keep original value if parsing fails
+							}
+						}
+						
+						channelInfo.append(channelLabels[propertyIndex]).append(": ").append(value).append("\n");
+						
+						propertyIndex = (propertyIndex + 1) % 5;
+					}
+				}
+				
+				return channelInfo.length() > 0 ? channelInfo.toString() : "No channel data found";
+			}
+		}
+		return "No metadata window found";
+	}
+	
+	private void closeMetadataWindow() {
+		Frame[] frames = Frame.getFrames();
+		for (Frame frame : frames) {
+			if (frame.getTitle().equals("image_metadata")) {
+				frame.dispose();
+				return;
+			}
+		}
+	}
+	
+	private String extractSystemConfigFromWindow() {
+		// Array.show() creates a TextWindow with the name "image_metadata"
+		Frame[] frames = Frame.getFrames();
+		for (Frame frame : frames) {
+			if (frame.getTitle().equals("image_metadata")) {
+				ij.text.TextWindow tw = (ij.text.TextWindow) frame;
+				ij.text.TextPanel tp = tw.getTextPanel();
+				String text = tp.getText();
+				
+				// Parse the text - first 5 data rows are system config
+				StringBuilder systemConfig = new StringBuilder();
+				String[] lines = text.split("\n");
+				String[] labels = {"Model", "Objective", "Scan Mode", "Dwell Time", "Voxel Size"};
+				
+				// Rows 1-5 are system properties (row 0 is header)
+				for (int i = 1; i <= 5 && i < lines.length; i++) {
+					String value = lines[i].split("\t")[0]; // Get first column value
+					systemConfig.append(labels[i-1]).append(": ").append(value).append("\n");
+				}
+				
+				return systemConfig.length() > 0 ? systemConfig.toString() : "No system config found";
+			}
+		}
+		return "No metadata window found";
 	}
 
-	private InfoPanel findInfoPanel() {
-        for (Window window : Window.getWindows()) {
-            if (window instanceof JFrame) {
-                JFrame frame = (JFrame) window;
-                for (Component comp : frame.getContentPane().getComponents()) {
-                    if (comp instanceof JTabbedPane) {
-                        JTabbedPane tabs = (JTabbedPane) comp;
-                        for (int i = 0; i < tabs.getTabCount(); i++) {
-                            Component tabComponent = tabs.getComponentAt(i);
-                            if (tabComponent instanceof InfoPanel) {
-                                return (InfoPanel) tabComponent;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return null; // Return null if InfoPanel is not found
-    }
+
 
 	public void meta() {
 		ImagePlus imp = IJ.getImage();
 		if (imp == null) {
+			IJ.error("No Image", "Please open an image first.");
 			return;
 		}
-		//String filePath = imp.getTitle();
-		String filePath = imp.getOriginalFileInfo().directory + imp.getOriginalFileInfo().fileName;
-		System.out.println("File path: " + filePath);
-		Map<String, Object> result = new LinkedHashMap<>();
-
+		
+		// Run the MetaDataParser2.ijm macro
+		String macroPath = extractResourceToTemp("/scripts/MetaDataParser2.ijm");
+		if (macroPath != null) {
+			IJ.runMacroFile(macroPath);
+		} else {
+			IJ.error("Error", "Failed to load MetaDataParser2.ijm from resources.");
+		}
+	}
+	
+	/**
+	 * Extracts a resource file to a temporary location
+	 */
+	private String extractResourceToTemp(String resourcePath) {
 		try {
-			ImageReader reader1 = new ImageReader();
-        	reader1.setId(filePath);
-			Map<String, Object> meta = reader1.getGlobalMetadata();
-			//System.out.println("Metadata: " + meta);
-			// for (Map.Entry<String, Object> entry : meta.entrySet()) {
-			// 	System.out.println(entry.getKey() + " = " + entry.getValue());
-			// }
-			reader1.close(); // Close the reader after use
-
-			// Set up OME-XML metadata service
-			ServiceFactory factory = new ServiceFactory();
-        	OMEXMLService service = factory.getInstance(OMEXMLService.class);
-        	IMetadata omeMeta = service.createOMEXMLMetadata();
-			// Set up reader
-			ImageReader reader = new ImageReader();
-			reader.setMetadataStore(omeMeta);
-			reader.setId(filePath);
-			System.out.println(getImageSize(omeMeta));
-			System.out.println(getVoxelSize(omeMeta));
-			System.out.println(getScanMode(meta));
-			System.out.println(getDwellTime(meta));
-			System.out.println(getObjective(meta));
-			// --- Channel info ---
-			reader.close(); // Close the reader after use
-
-		} catch (Exception e) {
-            result.put("error", e.getMessage());
-            e.printStackTrace();
-        }
-		
-
-	}
-	
-	private String getImageSize(IMetadata omeMeta) {
-		if (omeMeta == null) {
-			return "No metadata available.";
-		}
-		// --- Basic image info ---
-		int sizeX = omeMeta.getPixelsSizeX(0).getValue();
-		int sizeY = omeMeta.getPixelsSizeY(0).getValue();
-		int sizeZ = omeMeta.getPixelsSizeZ(0).getValue();
-		int sizeC = omeMeta.getPixelsSizeC(0).getValue();
-		int sizeT = omeMeta.getPixelsSizeT(0).getValue();
-		
-		//System.out.printf("Dimensions: %d x %d x %d (XYZ), C=%d, T=%d\n", sizeX, sizeY, sizeZ, sizeC, sizeT);
-		String dim = String.format("Dimensions: %d x %d x %d (XYZ), C=%d, T=%d", sizeX, sizeY, sizeZ, sizeC, sizeT);
-		return dim;
-	}
-	
-	private String getVoxelSize(IMetadata omeMeta) {
-		if (omeMeta == null) {
-			return "No metadata available.";
-		}
-		// // --- Voxel size (convert meters to microns) ---
-		double voxelX = omeMeta.getPixelsPhysicalSizeX(0).value().doubleValue();
-		//System.out.println("Voxel size X: " + voxelX);
-		double voxelY = omeMeta.getPixelsPhysicalSizeY(0).value().doubleValue();
-		double voxelZ = omeMeta.getPixelsPhysicalSizeZ(0) != null? omeMeta.getPixelsPhysicalSizeZ(0).value().doubleValue(): 1.0;
-		String unitX = omeMeta.getPixelsPhysicalSizeX(0).unit().getSymbol();
-		//System.out.println("Voxel size unit: " + unitX);
-		//System.out.printf("Voxel size: %.3f x %.3f x %.3f micron³\n", voxelX, voxelY, voxelZ);
-        String vox = String.format("Voxel size: %.3f x %.3f x %.3f %s³", voxelX, voxelY, voxelZ, unitX);
-		return vox;
-	}
-
-	private String getScanMode(Map<String, Object> meta) {
-		if (meta == null) {
-			return "No metadata available.";
-		}
-		String[] possibleKeys = {
-			"Information|Image|Channel|LaserScanInfo|ScanningMode",      // Zeiss
-			"Information|Image|Channel|AcquisitionMode",				 // Zeiss
-			"Series Mode #1",                                            // Nikon AX
-			"{Channel Series Mode}"                                      // Nikon A1
-		};
-		// // Optional: search loosely
-		// for (String key : meta.keySet()) {
-		// 	System.out.println("Key: " + key);
-		// }
-		Set<String> normalizedPossibleKeys = new HashSet<>();
-		for (String key : possibleKeys) {
-			normalizedPossibleKeys.add(key.replaceAll("\\s+#\\d+$", "").trim());
-		}
-
-		// for (String key : possibleKeys) {
-		// 	if (meta.containsKey(key)) {
-		// 		System.out.println("Scan Mode: " + meta.get(key).toString());
-		// 		return meta.get(key).toString();
-		// 	}
-		// }
-		// Now iterate through metadata
-		for (Map.Entry<String, Object> entry : meta.entrySet()) {
-			String rawKey = entry.getKey();
-			String normalizedKey = rawKey.replaceAll("\\s+#\\d+$", "").trim();
-	
-			if (normalizedPossibleKeys.contains(normalizedKey)) {
-				Object value = entry.getValue();
-				if (value != null) {
-					System.out.println("Scan Mode: " + value.toString());
-					return "Scan Mode: " + value.toString();
-				}
+			InputStream is = getClass().getResourceAsStream(resourcePath);
+			if (is == null) {
+				System.err.println("Resource not found: " + resourcePath);
+				return null;
 			}
+			
+			// Create temp file
+			String fileName = resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
+			File tempFile = File.createTempFile("easyfiji_", "_" + fileName);
+			tempFile.deleteOnExit();
+			
+			// Copy resource to temp file
+			java.io.FileOutputStream fos = new java.io.FileOutputStream(tempFile);
+			byte[] buffer = new byte[1024];
+			int bytesRead;
+			while ((bytesRead = is.read(buffer)) != -1) {
+				fos.write(buffer, 0, bytesRead);
+			}
+			fos.close();
+			is.close();
+			
+			return tempFile.getAbsolutePath();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		return "Scan Mode: No found";
 	}
-
-	private String getDwellTime(Map<String, Object> meta) {
-		if (meta == null) {
-			return "No metadata available.";
-		}
-		// Known keys for dwell time (pixel time) from Zeiss and Nikon
-		String[] possibleKeys = {
-			"Information|Image|Channel|LaserScanInfo|PixelTime",   // Zeiss LSM (CZI)
-			"Information|Image|Channel|ExposureTime",
-			"Dwell Time",                                          // Nikon AX (ND2)
-			"{Scan Speed}"                                         // Nikon A1 (ND2)
-		};
-		for (Map.Entry<String, Object> entry : meta.entrySet()) {
-			String rawKey = entry.getKey().trim();
-			String normalizedKey = rawKey.replaceAll("\\s+#\\d+$", "");
 	
-			for (String matchKey : possibleKeys) {
-				if (normalizedKey.equalsIgnoreCase(matchKey)) {
-					Object val = entry.getValue();
-					if (val != null) {
-						try {
-							double dwellTimeSec = Double.parseDouble(val.toString());
-							double dwellTimeUsec = dwellTimeSec * 1e6;
-							return String.format("Dwell Time: %.2f µs", dwellTimeUsec);
-						} catch (NumberFormatException e) {
-							return "Dwell Time (raw): " + val.toString();
-						}
+	private InfoPanel findInfoPanel() {
+		// First, try to find the currently focused/visible "Easy Fiji" frame
+		for (Window window : Window.getWindows()) {
+			if (window instanceof JFrame && window.isVisible() && window.isFocused()) {
+				JFrame frame = (JFrame) window;
+				if (frame.getTitle().equals("Easy Fiji")) {
+					InfoPanel panel = searchForInfoPanel(frame);
+					if (panel != null) {
+						return panel;
 					}
 				}
 			}
 		}
-		return "Dwell Time: Not found.";
-	}
-
-	private String getObjective(Map<String, Object> meta) {
-		if (meta == null) {
-			return "No metadata available.";
-		}
-		// Known keys for dwell time (pixel time) from Zeiss and Nikon
-		String[] possibleKeys = {
-			"Information|Instrument|Objective|Manufacturer|Model",   // Zeiss LSM (CZI)
-			"sObjective",                                          // Nikon AX (ND2)
-		};
-		// Normalize possible keys
-		Set<String> normalizedPossibleKeys = new HashSet<>();
-		for (String key : possibleKeys) {
-			normalizedPossibleKeys.add(key.replaceAll("\\s+#\\d+$", "").trim());
-		}
-		// Search metadata
-		for (Map.Entry<String, Object> entry : meta.entrySet()) {
-			String rawKey = entry.getKey().trim();
-			String normalizedKey = rawKey.replaceAll("\\s+#\\d+$", "").trim();
-	
-			if (normalizedPossibleKeys.contains(normalizedKey)) {
-				Object value = entry.getValue();
-				if (value != null) {
-					return "Objective: " + value.toString();
+		
+		// If no focused frame found, search all visible Easy Fiji frames
+		for (Window window : Window.getWindows()) {
+			if (window instanceof JFrame && window.isVisible()) {
+				JFrame frame = (JFrame) window;
+				if (frame.getTitle().equals("Easy Fiji")) {
+					InfoPanel panel = searchForInfoPanel(frame);
+					if (panel != null) {
+						return panel;
+					}
 				}
 			}
 		}
-		return "Objective: Not found.";
-	}
-
-	private void replace() { 
-		// Replaces input channel with new output...
-		// Works at the level of the ImageStack to avoid updating display until all slices have been modified
-		int nframes = imp.getNFrames();
-		int nslices = imp.getNSlices();
-		int[] stkidxs = new int[nframes*nslices];
-		int c=0;
-		// Gets set of 1D ImageStack indices in input that correspond to all planes of given channel		
-		for (int frame=1; frame<=nframes; frame++) { 
-			for (int slice=1; slice<=nslices; slice++) {	
-				stkidxs[c] = imp.getStackIndex(curch, slice, frame); // returns ImageStack 1D index at this location
-				c = c+1;
+		
+		// Last resort: search all windows
+		for (Window window : Window.getWindows()) {
+			if (window instanceof JFrame) {
+				JFrame frame = (JFrame) window;
+				InfoPanel panel = searchForInfoPanel(frame);
+				if (panel != null) {
+					return panel;
+				}
 			}
 		}
-										
-		//  Replaces appropriate input slices with corresponding output slices
-		ImageStack chimgstk = chimp.getStack(); // ch-specific output slices
-		ImageStack imgstk = imp.getStack();  // all input imp slices
-		for (int i = 0; i<stkidxs.length; i++) {
-			ImageProcessor chip = chimgstk.getProcessor((i+1));
-			imgstk.setProcessor(chip, stkidxs[i]); //stkidx is zero-based
-		}	
-		
-		// Updates display to show final result...
-		imp.setStack(imgstk);
-		imp.updateAndDraw();  // Redraws image with new output (Not show() since the image is already shown).
-		
+		return null;
+	}
+	
+	private InfoPanel searchForInfoPanel(JFrame frame) {
+		for (Component comp : frame.getContentPane().getComponents()) {
+			if (comp instanceof JTabbedPane) {
+				JTabbedPane tabs = (JTabbedPane) comp;
+				for (int i = 0; i < tabs.getTabCount(); i++) {
+					Component tabComponent = tabs.getComponentAt(i);
+					if (tabComponent instanceof InfoPanel) {
+						return (InfoPanel) tabComponent;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
-// Responses to JDialog sub-gui buttons...
+	// Responses to JDialog sub-gui buttons...
 	public void actionPerformed(ActionEvent e) {  
-		// FIX - Have to getSource to decide if multiple buttons are present...
-        jd.setVisible(false);
+		jd.setVisible(false);
 		jd.dispose();
 		
 		// The response
 		IJ.doCommand("Crop");
-		
-    } 
+	} 
 
-
-	
 }

@@ -38,7 +38,7 @@ public class InfoPanel extends BasePanel {
         // this.add(scrollPane);
         
 
-        JLabel channelLabel = addFirstLabel(this, new Rectangle(10, 5, 200, 20), "Channel Info：", 14);
+        JLabel channelLabel = addFirstLabel(this, new Rectangle(10, 5, 200, 20), "Channel Info：", 15);
         this.add(channelLabel);
         this.channelInfoTextArea = addTextArea(this, "", "", new Rectangle(10, 30, 310, 165), 12);
         channelInfoTextArea.setLineWrap(true);
@@ -49,7 +49,7 @@ public class InfoPanel extends BasePanel {
         channelscrollPane.setBounds(10, 30, 310, 165);
         this.add(channelscrollPane);
 
-        JLabel acquistionLabel = addFirstLabel(this, new Rectangle(10, 200, 200, 20), "System configuration：", 14);
+        JLabel acquistionLabel = addFirstLabel(this, new Rectangle(10, 200, 200, 20), "System configuration：", 15);
         this.add(acquistionLabel);
         this.acquistionInfoTextArea = addTextArea(this, "", "", new Rectangle(10, 225, 310, 100), 12);
         acquistionInfoTextArea.setLineWrap(true);
@@ -195,5 +195,12 @@ public class InfoPanel extends BasePanel {
         
     }
 
+    public void setChannelInfo(String info) {
+        channelInfoTextArea.setText(info);
+    }
+    
+    public void setSystemConfig(String info) {
+        acquistionInfoTextArea.setText(info);
+    }
 
 }

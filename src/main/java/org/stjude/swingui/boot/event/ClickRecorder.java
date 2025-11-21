@@ -78,9 +78,16 @@ public class ClickRecorder implements ActionListener {
         recordedClicks.add(action);
         System.out.println("📌 Recorded: " + action.toString());
 
+        // Get current image name
+        String imageName = "Unknown";
+        ImagePlus imp = WindowManager.getCurrentImage();
+        if (imp != null) {
+            imageName = imp.getTitle();
+        }
+
         // **Update table model**
         if (tableModel != null) {
-            ActionRecord record = new ActionRecord(command, parameters, channel);
+            ActionRecord record = new ActionRecord(command, parameters, channel, imageName);
             javax.swing.SwingUtilities.invokeLater(() -> tableModel.addRecord(record));
         }
 
@@ -234,12 +241,19 @@ public class ClickRecorder implements ActionListener {
     
             try (FileWriter writer = new FileWriter(filePath)) {
                 // Write header
-                writer.write("Channel,Action,Parameters\n");
+                writer.write("Image,Channel,Action,Parameters\n");
                 
-                // Write data rows
+                // Write data rows - sorted by image filename
                 java.util.List<ActionRecord> records = tableModel.getRecords();
+                java.util.Collections.sort(records, new java.util.Comparator<ActionRecord>() {
+                    @Override
+                    public int compare(ActionRecord r1, ActionRecord r2) {
+                        return r1.getImageName().compareTo(r2.getImageName());
+                    }
+                });
                 for (ActionRecord record : records) {
-                    writer.write(String.format("%s,%s,\"%s\"\n",
+                    writer.write(String.format("%s,%s,%s,\"%s\"\n",
+                        record.getImageName(),
                         record.getChannelLabel(),
                         record.getActionId(),
                         record.getParamsAsString()));
@@ -266,12 +280,19 @@ public class ClickRecorder implements ActionListener {
     
         try (FileWriter writer = new FileWriter(filePath)) {
             // Write header
-            writer.write("Channel,Action,Parameters\n");
+            writer.write("Image,Channel,Action,Parameters\n");
             
-            // Write data rows
+            // Write data rows - sorted by image filename
             java.util.List<ActionRecord> records = tableModel.getRecords();
+            java.util.Collections.sort(records, new java.util.Comparator<ActionRecord>() {
+                @Override
+                public int compare(ActionRecord r1, ActionRecord r2) {
+                    return r1.getImageName().compareTo(r2.getImageName());
+                }
+            });
             for (ActionRecord record : records) {
-                writer.write(String.format("%s,%s,\"%s\"\n",
+                writer.write(String.format("%s,%s,%s,\"%s\"\n",
+                    record.getImageName(),
                     record.getChannelLabel(),
                     record.getActionId(),
                     record.getParamsAsString()));
